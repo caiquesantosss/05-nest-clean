@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { CurrentUser } from 'src/auth/current-user-decorator'
 import { JwtAuthGuard } from 'src/auth/jwt.AuthGuard'
-import { TokenPayload } from 'src/auth/jwt.strategy'
+import { UserPayload } from 'src/auth/jwt.strategy'
 
 @Controller('/questions')
 @UseGuards(JwtAuthGuard)
@@ -15,8 +15,8 @@ export class CreateQuestionController {
 
   @Post()
   @HttpCode(201)
-  async handle(@CurrentUser() user: TokenPayload) {
-    console.log(user)
+  async handle(@CurrentUser() user: UserPayload) {
+    console.log(user.sub)
 
     return "ok"
   }

@@ -1,5 +1,5 @@
-import { AppModule } from '@/app.module'
-import { PrismaService } from '@/prisma/prisma.service'
+import { AppModule } from '@/infra/app.module'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
@@ -28,8 +28,8 @@ describe('Create Account [E2E]', () => {
     expect(response.statusCode).toBe(201)
     const UserOnDatabase = await prisma.user.findUnique({
       where: {
-        email: 'ZVt9y@example.com'
-      }
+        email: 'ZVt9y@example.com',
+      },
     })
 
     expect(UserOnDatabase).toBeTruthy()

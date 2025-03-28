@@ -3,7 +3,7 @@ import {
   AnswerProps,
 } from '../../src/domain/forum/enterprise/entities/answer'
 import { UniqueEntityId } from '../../src/core/entities/unique-entity'
-import { faker } from '@faker-js/faker'
+import { faker } from '@faker-js/faker/dist/index.js';
 
 export function MakeAnswer(
   override: Partial<AnswerProps> = {},

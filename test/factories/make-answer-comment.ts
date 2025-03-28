@@ -3,7 +3,7 @@ import {
   AnswerCommentProps,
 } from '../../src/domain/forum/enterprise/entities/answer-comment'
 import { UniqueEntityId } from '../../src/core/entities/unique-entity'
-import { faker } from '@faker-js/faker'
+import { faker } from '@faker-js/faker/dist/index.js';
 
 export function MakeAnswerComment(
   override: Partial<AnswerCommentProps> = {},

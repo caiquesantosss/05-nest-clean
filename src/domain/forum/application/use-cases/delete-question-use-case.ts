@@ -8,7 +8,10 @@ interface DeleteQuestionRequest {
   questionId: string
 }
 
-type DeleteQuestionResponse = Either<null, {}>
+type DeleteQuestionResponse = Either<
+  ResourceNotFoundError | NotAllowedError,
+  {}
+>
 
 export class DeleteQuestionUseCase {
   constructor(private questionRepository: QuestionRepository) {}

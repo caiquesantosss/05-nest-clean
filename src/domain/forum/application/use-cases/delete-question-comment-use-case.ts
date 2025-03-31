@@ -8,7 +8,10 @@ interface DeleteQuestionCommentRequest {
   questionCommentId: string
 }
 
-type DeleteQuestionCommentResponse = Either<null, {}>
+type DeleteQuestionCommentResponse = Either<
+  ResourceNotFoundError | NotAllowedError,
+  {}
+>
 
 export class DeleteQuestionCommentUseCase {
   constructor(private questionCommentRepository: QuestionCommentRepository) {}
@@ -22,11 +25,11 @@ export class DeleteQuestionCommentUseCase {
     )
 
     if (!questionComment) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError()) 
     }
 
     if (questionComment.authorId.toString() !== authorId) {
-      return left(new NotAllowedError())
+      return left(new NotAllowedError()) 
     }
 
     await this.questionCommentRepository.delete(questionComment)

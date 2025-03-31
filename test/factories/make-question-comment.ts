@@ -3,7 +3,7 @@ import {
   QuestionCommentProps,
 } from '../../src/domain/forum/enterprise/entities/question-comment'
 import { UniqueEntityId } from '../../src/core/entities/unique-entity'
-import { faker } from '@faker-js/faker/dist/index.js';
+import { faker } from '@faker-js/faker';
 
 export function MakeQuestionComment(
   override: Partial<QuestionCommentProps> = {},

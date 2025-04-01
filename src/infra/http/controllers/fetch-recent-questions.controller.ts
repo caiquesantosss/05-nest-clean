@@ -1,7 +1,11 @@
-import { Controller, Get, HttpCode, Query, UseGuards } from '@nestjs/common'
-import { JwtAuthGuard } from '@/infra/auth/jwt.AuthGuard'
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  HttpCode,
+  Query
+} from '@nestjs/common'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { z } from 'zod'
 import { FetchRecentQuestionUseCaseUseCase } from '@/domain/forum/application/use-cases/fetch-recent-questions-use-case'
 import { QuestionPresenter } from '../presenters/question-presenter'
@@ -18,7 +22,6 @@ const QueryValidationPipe = new ZodValidationPipe(PageQueryParamsSchema)
 type PageParamsSchema = z.infer<typeof PageQueryParamsSchema>
 
 @Controller('/questions')
-@UseGuards(JwtAuthGuard)
 export class FetchRecentQuestionsController {
   constructor(private fetchRecentQuestion: FetchRecentQuestionUseCaseUseCase) {}
 
@@ -30,7 +33,7 @@ export class FetchRecentQuestionsController {
     })
 
     if (result.isLeft()) {
-      throw new Error()
+      throw new BadRequestException()
     }
 
     const questions = result.value.questions

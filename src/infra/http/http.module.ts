@@ -6,9 +6,13 @@ import { FetchRecentQuestionsController } from './controllers/fetch-recent-quest
 import { DatabaseModule } from '../database/database.module'
 import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/create-question-use-case'
 import { FetchRecentQuestionUseCaseUseCase } from '@/domain/forum/application/use-cases/fetch-recent-questions-use-case'
+import { CryptographyModule } from '../cryptography/cryptography.module'
+import { RegisterStudentUseCase } from '@/domain/forum/application/use-cases/register-student'
+import { AuthenticateStudentsUseCase } from '@/domain/forum/application/use-cases/authenticate-student'
+import { APP_GUARD } from '@nestjs/core'
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, CryptographyModule],
   controllers: [
     CreateAccountController,
     AuthenticateController,
@@ -17,7 +21,9 @@ import { FetchRecentQuestionUseCaseUseCase } from '@/domain/forum/application/us
   ],
   providers: [
     CreateQuestionUseCase,
-    FetchRecentQuestionUseCaseUseCase
+    FetchRecentQuestionUseCaseUseCase,
+    RegisterStudentUseCase, 
+    AuthenticateStudentsUseCase
   ],
 })
 export class httpModule {}

@@ -26,7 +26,7 @@ describe('Edit Answer', () => {
   it('should be able to edit a answer', async () => {
     const newAnswer = MakeAnswer(
       {
-        authorId: new UniqueEntityId('author-1'),
+        authorId: new UniqueEntityId('author-1').toString(),
       },
       new UniqueEntityId('answer-1')
     )
@@ -69,7 +69,7 @@ describe('Edit Answer', () => {
   it('should not be able to edit a answer', async () => {
     const newAnswer = MakeAnswer(
       {
-        authorId: new UniqueEntityId('author-1'),
+        authorId: new UniqueEntityId('author-1').toString(),
       },
       new UniqueEntityId('answer-1')
     )

@@ -5,12 +5,12 @@ import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { AnswerCreatedEvent } from '../../application/event/answer-created-event'
 
 export interface AnswerProps {
-  authorId: UniqueEntityId
-  questionId: UniqueEntityId
+  authorId: string
+  questionId: string
   content: string
   createdAt: Date
   attachments: AnswerAttachmentList
-  updatedAt?: Date
+  updatedAt?: Date | null
 }
 
 export class Answer extends AggregateRoot<AnswerProps> {

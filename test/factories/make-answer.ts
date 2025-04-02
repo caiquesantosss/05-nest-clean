@@ -11,8 +11,8 @@ export function MakeAnswer(
 ) {
   const answer = Answer.create(
     {
-      authorId: new UniqueEntityId(),
-      questionId: new UniqueEntityId(),
+      authorId: new UniqueEntityId().toString(),
+      questionId: new UniqueEntityId().toString(),
       content: faker.lorem.text(),
       ...override,
     },

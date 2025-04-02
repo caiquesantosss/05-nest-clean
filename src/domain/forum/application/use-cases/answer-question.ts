@@ -30,8 +30,8 @@ export class AnswerQuestionUseCase {
   }: AnswerQuestionRequest): Promise<AnswerQuestionResponse> {
     const answer = Answer.create({
       content,
-      authorId: new UniqueEntityId(InstructorId),
-      questionId: new UniqueEntityId(questionId),
+      authorId: new UniqueEntityId(InstructorId).toString(),
+      questionId: new UniqueEntityId(questionId).toString(),
     })
 
     const answerAttachment = attachmentsIds.map((attachmentId) => {

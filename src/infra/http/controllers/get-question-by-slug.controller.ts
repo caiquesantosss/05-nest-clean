@@ -2,19 +2,17 @@ import {
     BadRequestException,
     Controller,
     Get,
-    HttpCode,
     Param
 } from '@nestjs/common'
 import { QuestionPresenter } from '../presenters/question-presenter'
 import { GetQuestionBySlugUseCase } from '@/domain/forum/application/use-cases/get-question-by-slug'
 
-@Controller('/questions/:slug')
+@Controller('/question/:slug')
 export class GetQuestionBySlugController {
   constructor(private GetQuestionBySlug: GetQuestionBySlugUseCase) {}
 
   @Get()
-  @HttpCode(200)
-  async handle(@Param('page') slug: string) {
+  async handle(@Param('slug') slug: string) {
     const result = await this.GetQuestionBySlug.execute({
       slug,
     })
@@ -22,6 +20,7 @@ export class GetQuestionBySlugController {
     if (result.isLeft()) {
       throw new BadRequestException()
     }
+
     return { question: QuestionPresenter.toHttp(result.value.question) }
   }
 }

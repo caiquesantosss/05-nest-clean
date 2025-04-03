@@ -53,6 +53,8 @@ export class PrismaQuestionsRepository implements QuestionRepository {
       },
     })
 
+    console.log(question)
+
     if (!question) {
       return null
     }

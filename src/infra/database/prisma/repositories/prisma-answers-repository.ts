@@ -27,7 +27,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
   async save(answer: Answer): Promise<void> {
     const data = PrismaAnswerMapper.toPrisma(answer)
 
-    await this.prisma.question.update({
+    await this.prisma.answer.update({
       where: {
         id: data.id,
       },
@@ -35,7 +35,7 @@ export class PrismaAnswerRepository implements AnswerRepository {
     })
   }
 
-  async findManyQuestionId(
+  async findManyAnswersId(
     questionId: string,
     { page }: PaginationParams
   ): Promise<Answer[]> {

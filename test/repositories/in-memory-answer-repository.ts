@@ -42,7 +42,7 @@ export class InMemoryAnswerRepository implements AnswerRepository {
     return answer
   }
 
-  async findManyQuestionId(questioId: string, params: PaginationParams) {
+  async findManyAnswersId(questioId: string, params: PaginationParams) {
     const answers = this.items
       .filter((item) => item.QuestionId.toString() === questioId)
       .slice((params.page - 1) * 20, params.page * 20)

@@ -7,6 +7,7 @@ import { AnswerAttachmentList } from '../../enterprise/entities/answer-attachmen
 import { AnswerAttachmentRepository } from '../repositories/answer-attachments-repository'
 import { UniqueEntityId } from '@/core/entities/unique-entity'
 import { AnswerAttachment } from '../../enterprise/entities/answer-attachment'
+import { Injectable } from '@nestjs/common'
 
 interface EditAnswerRequest {
   authorId: string
@@ -22,6 +23,7 @@ type EditAnswerResponse = Either<
   }
 >
 
+@Injectable()
 export class EditAnswerUseCase {
   constructor(
     private answerRepository: AnswerRepository,

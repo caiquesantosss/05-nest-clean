@@ -37,9 +37,12 @@ import { FetchQuestionsCommentsController } from './controllers/fetch-questions-
 import { FetchQuestionCommentUseCase } from '@/domain/forum/application/use-cases/fetch-question-comment-use-case'
 import { FetchAnswerCommentUseCase } from '@/domain/forum/application/use-cases/fetch-answer-comment-use-case'
 import { FetchAnswerCommentsController } from './controllers/fetch-answer-comment.controller'
+import { UploadAttachmentController } from './controllers/upload-attachment.controller'
+import { StorageModule } from '../storage/storage.module'
+import { UploadAndCreateAttachmentsUseCase } from '@/domain/forum/application/use-cases/upload-and-create-attachments-use-case'
 
 @Module({
-  imports: [DatabaseModule, CryptographyModule],
+  imports: [DatabaseModule, CryptographyModule, StorageModule],
   controllers: [
     CreateAccountController,
     AuthenticateController,
@@ -47,8 +50,8 @@ import { FetchAnswerCommentsController } from './controllers/fetch-answer-commen
     FetchRecentQuestionsController,
     GetQuestionBySlugController,
     EditQuestionController,
-    DeleteQuestionController, 
-    AnswerQuestionController, 
+    DeleteQuestionController,
+    AnswerQuestionController,
     EditAnswerController,
     DeleteAnswerController,
     FetchQuestionsAnswersController,
@@ -56,29 +59,31 @@ import { FetchAnswerCommentsController } from './controllers/fetch-answer-commen
     CommentOnQuestionController,
     DeleteQuestionCommentController,
     CommentOnAnswerController,
-    DeleteAnswerCommentController, 
+    DeleteAnswerCommentController,
     FetchQuestionsCommentsController,
-    FetchAnswerCommentsController
+    FetchAnswerCommentsController,
+    UploadAttachmentController,
   ],
   providers: [
     CreateQuestionUseCase,
     FetchRecentQuestionUseCaseUseCase,
-    RegisterStudentUseCase, 
+    RegisterStudentUseCase,
     AuthenticateStudentsUseCase,
     GetQuestionBySlugUseCase,
-    EditQuestionUseCase, 
-    DeleteQuestionUseCase, 
+    EditQuestionUseCase,
+    DeleteQuestionUseCase,
     AnswerQuestionUseCase,
     EditAnswerUseCase,
-    DeleteAnswerUseCase, 
+    DeleteAnswerUseCase,
     FetchQuestionAnswerUseCase,
     ChooseQuestionBestAnswerUseCase,
     CommentOnQuestionUseCase,
     DeleteQuestionCommentUseCase,
     CommentOnAnswerUseCase,
     DeleteAnswerCommentUseCase,
-    FetchQuestionCommentUseCase, 
-    FetchAnswerCommentUseCase
+    FetchQuestionCommentUseCase,
+    FetchAnswerCommentUseCase,
+    UploadAndCreateAttachmentsUseCase,
   ],
 })
 export class httpModule {}

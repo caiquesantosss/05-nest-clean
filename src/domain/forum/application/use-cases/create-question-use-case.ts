@@ -5,6 +5,7 @@ import { Either, right } from '@/core/either'
 import { QuestionAttachment } from '../../enterprise/entities/question-attachment'
 import { QuestionAttachmentList } from '../../enterprise/entities/question-attachment-list'
 import { Injectable } from '@nestjs/common'
+import { QuestionAttachmentRepository } from '../repositories/question-attachments-repository'
 
 interface CreateQuestionRequest {
   authorId: string
@@ -22,7 +23,10 @@ type CreateQuestionResponse = Either<
 
 @Injectable()
 export class CreateQuestionUseCase {
-  constructor(private questionRepository: QuestionRepository) {}
+  constructor(
+    private questionRepository: QuestionRepository,
+    private questionAttachmentsRepository: QuestionAttachmentRepository
+  ) {}
 
   async execute({
     authorId,
@@ -33,19 +37,21 @@ export class CreateQuestionUseCase {
     const question = Question.create({
       authorId: new UniqueEntityId(authorId),
       title,
-      content,
+      content
     })
 
-    const questionAttachment = attachmentsIds.map(attachmentId  => {
+    const questionAttachments = attachmentsIds.map((attachmentId) => {
       return QuestionAttachment.create({
-        attachmentId: new UniqueEntityId(attachmentId).toString(), 
-        questionId: question.id.toString()
+        attachmentId: new UniqueEntityId(attachmentId),
+        questionId: question.id,
       })
     })
-    
-    question.attachments = new QuestionAttachmentList(questionAttachment)
+
+    question.attachments = new QuestionAttachmentList(questionAttachments)
 
     await this.questionRepository.create(question)
+
+    await this.questionAttachmentsRepository.createMany(questionAttachments)
 
     return right({ question })
   }

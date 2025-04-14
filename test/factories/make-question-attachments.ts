@@ -1,22 +1,45 @@
-import { Injectable } from '@nestjs/common'
-import { UniqueEntityId } from '../../src/core/entities/unique-entity'
-import { QuestionAttachment, QuestionAttachmentProps } from '../../src/domain/forum/enterprise/entities/question-attachment'
+import { UniqueEntityId } from '@/core/entities/unique-entity'
+import {
+  QuestionAttachment,
+  QuestionAttachmentProps,
+} from '@/domain/forum/enterprise/entities/question-attachment'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
-import { PrismaQuestionAttachmentMapper } from '@/infra/database/prisma/mappers/prisma-question-attachment-mappert'
+import { Injectable } from '@nestjs/common'
 
-export function MakeQuestionAttachment(
+export function makeQuestionAttachment(
   override: Partial<QuestionAttachmentProps> = {},
-  id?: UniqueEntityId
+  id?: UniqueEntityId,
 ) {
-  const questionComment = QuestionAttachment.create(
+  const questionAttachment = QuestionAttachment.create(
     {
-      questionId: new UniqueEntityId().toString(),
-      attachmentId: new UniqueEntityId().toString(),
+      questionId: new UniqueEntityId(),
+      attachmentId: new UniqueEntityId(),
       ...override,
     },
-    id
+    id,
   )
 
-  return questionComment
+  return questionAttachment
 }
 
+@Injectable()
+export class QuestionAttachmentFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaQuestionAttachment(
+    data: Partial<QuestionAttachmentProps> = {},
+  ): Promise<QuestionAttachment> {
+    const questionAttachment = makeQuestionAttachment(data)
+
+    await this.prisma.attachment.update({
+      where: {
+        id: questionAttachment.attachmentId.toString(),
+      },
+      data: {
+        questionId: questionAttachment.questionId.toString(),
+      },
+    })
+
+    return questionAttachment
+  }
+}

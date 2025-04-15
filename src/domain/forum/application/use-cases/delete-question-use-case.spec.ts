@@ -4,7 +4,7 @@ import { DeleteQuestionUseCase } from './delete-question-use-case'
 import { UniqueEntityId } from '@/core/entities/unique-entity'
 import { NotAllowedError } from '../../../../core/errors/errors/not-allowed-error'
 import { InMemoryQuestionAttachmentRepository } from 'test/repositories/in-memory-question-attachments-repository'
-import { MakeQuestionAttachment } from 'test/factories/make-question-attachments'
+import { makeQuestionAttachment } from 'test/factories/make-question-attachments'
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
 let inMemoryQuestionAttachmentRepository: InMemoryQuestionAttachmentRepository
@@ -31,13 +31,13 @@ describe('Delete Question', () => {
     await inMemoryQuestionsRepository.create(newQuestion)
 
     inMemoryQuestionAttachmentRepository.items.push(
-      MakeQuestionAttachment({
-        questionId: newQuestion.id.toString(),
-        attachmentId: new UniqueEntityId('1').toString(),
+      makeQuestionAttachment({
+        questionId: newQuestion.id,
+        attachmentId: new UniqueEntityId('1'),
       }),
-      MakeQuestionAttachment({
-        questionId: newQuestion.id.toString(),
-        attachmentId: new UniqueEntityId('2').toString(),
+      makeQuestionAttachment({
+        questionId: newQuestion.id,
+        attachmentId: new UniqueEntityId('2'),
       })
     )
 

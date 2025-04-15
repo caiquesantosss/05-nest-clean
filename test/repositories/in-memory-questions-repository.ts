@@ -16,7 +16,7 @@ export class InMemoryQuestionsRepository implements QuestionRepository {
     this.items.push(question)
 
     await this.questionAttachmentRepository.createMany(
-      question.attachments.getItems()
+      question.attachments.getItems(),
     )
 
     DomainEvents.dispatchEventsForAggregate(question.id)
@@ -28,6 +28,7 @@ export class InMemoryQuestionsRepository implements QuestionRepository {
     if (!question) {
       return null
     }
+
     return question
   }
 
@@ -37,6 +38,7 @@ export class InMemoryQuestionsRepository implements QuestionRepository {
     if (!question) {
       return null
     }
+
     return question
   }
 
@@ -46,11 +48,11 @@ export class InMemoryQuestionsRepository implements QuestionRepository {
     this.items[itemIndex] = question
 
     await this.questionAttachmentRepository.createMany(
-      question.attachments.getNewItems()
+      question.attachments.getNewItems(),
     )
 
     await this.questionAttachmentRepository.deleteMany(
-      question.attachments.getRemovedItems()
+      question.attachments.getRemovedItems(),
     )
 
     DomainEvents.dispatchEventsForAggregate(question.id)
@@ -61,7 +63,7 @@ export class InMemoryQuestionsRepository implements QuestionRepository {
 
     this.items.splice(itemIndex, 1)
 
-    this.questionAttachmentRepository.deleteManyByQuesitonId(
+    await this.questionAttachmentRepository.deleteManyByQuesitonId(
       question.id.toString()
     )
   }

@@ -15,6 +15,10 @@ export class InMemoryAnswerRepository implements AnswerRepository {
   async create(answer: Answer) {
     this.items.push(answer)
 
+    await this.answerAttachmentsRepository.createMany(
+      answer.attachments.getItems()
+    )
+
     DomainEvents.dispatchEventsForAggregate(answer.id)
   }
 
@@ -29,6 +33,15 @@ export class InMemoryAnswerRepository implements AnswerRepository {
 
   async save(answer: Answer) {
     const itemIndex = this.items.findIndex((item) => item.id === answer.id)
+
+    
+    await this.answerAttachmentsRepository.createMany(
+      answer.attachments.getNewItems()
+    )
+
+    await this.answerAttachmentsRepository.deleteMany(
+      answer.attachments.getRemovedItems()
+    )
 
     this.items[itemIndex] = answer
   }

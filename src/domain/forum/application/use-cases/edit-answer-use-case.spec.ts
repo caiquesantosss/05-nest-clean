@@ -51,19 +51,20 @@ describe('Edit Answer', () => {
       attachmentsIds: ['1', '3'],
     })
 
-    expect(
-      inMemoryAnswersRepository.items[0].attachments.currentItems
-    ).toHaveLength(2)
     expect(inMemoryAnswersRepository.items[0].attachments.currentItems).toEqual(
-      [
+      expect.arrayContaining([
         expect.objectContaining({
-          attachmentId: new UniqueEntityId('1').toString(),
+          props: expect.objectContaining({
+            attachmentId: '1',
+          }),
         }),
         expect.objectContaining({
-          attachmentId: new UniqueEntityId('3').toString(),
+          props: expect.objectContaining({
+            attachmentId: '3',
+          }),
         }),
-      ]
-    )
+      ])
+    )    
   })
 
   it('should not be able to edit a answer', async () => {

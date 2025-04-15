@@ -48,18 +48,18 @@ describe('Edit Question', () => {
       questionId: newQuestion.id.toValue(),
       authorId: 'author-1',
       title: 'Pergunta teste',
-      content: 'Conteúdo da pergunta',
+      content: 'Conteúdo da pergunta',
       attachmentsIds: ['1', '3'],
     })
 
     const updatedQuestion = inMemoryQuestionsRepository.items[0]
 
     expect(updatedQuestion.Title).toBe('Pergunta teste')
-    expect(updatedQuestion.Content).toBe('Conteúdo da pergunta')
+    expect(updatedQuestion.Content).toBe('Conteúdo da pergunta')
 
     expect(updatedQuestion).toMatchObject({
       Title: 'Pergunta teste',
-      Content: 'Conteúdo da pergunta',
+      Content: 'Conteúdo da pergunta',
     })
 
     expect(
@@ -69,10 +69,14 @@ describe('Edit Question', () => {
       inMemoryQuestionsRepository.items[0].attachments.currentItems
     ).toEqual([
       expect.objectContaining({
-        attachmentId: new UniqueEntityId('1'),
+        props: expect.objectContaining({
+          attachmentId: new UniqueEntityId('1'),
+        }),
       }),
       expect.objectContaining({
-        attachmentId: new UniqueEntityId('3'),
+        props: expect.objectContaining({
+          attachmentId: new UniqueEntityId('3'),
+        }),
       }),
     ])
   })
@@ -91,7 +95,7 @@ describe('Edit Question', () => {
       questionId: newQuestion.id.toValue(),
       authorId: 'author-2',
       title: 'Pergunta teste',
-      content: 'Conteúdo da pergunta',
+      content: 'Conteúdo da pergunta',
       attachmentsIds: [],
     })
 
@@ -124,10 +128,9 @@ describe('Edit Question', () => {
       questionId: newQuestion.id.toValue(),
       authorId: 'author-1',
       title: 'Pergunta teste',
-      content: 'Conteúdo da pergunta',
+      content: 'Conteúdo da pergunta',
       attachmentsIds: ['1', '3'],
     })
-
 
     expect(result.isRight()).toBe(true)
     expect(inMemoryQuestionAttachmentRepository.items).toHaveLength(2)
@@ -135,16 +138,15 @@ describe('Edit Question', () => {
       expect.arrayContaining([
         expect.objectContaining({
           props: expect.objectContaining({
-            attachmentId: '1',
+            attachmentId: new UniqueEntityId('1'),
           }),
         }),
         expect.objectContaining({
           props: expect.objectContaining({
-            attachmentId: '3',
+            attachmentId: new UniqueEntityId('3'),
           }),
         }),
       ])
     )
   })
 })
-   

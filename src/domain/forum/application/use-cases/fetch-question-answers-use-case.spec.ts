@@ -21,17 +21,17 @@ describe('Fetch Questions Answers', () => {
   it('should be able to fetch a questions answers', async () => {
     await inMemoryAnswerRepository.create(
       MakeAnswer({
-        questionId: new UniqueEntityId('question-1'),
+        questionId: new UniqueEntityId('question-1').toString(),
       })
     )
     await inMemoryAnswerRepository.create(
       MakeAnswer({
-        questionId: new UniqueEntityId('question-1'),
+        questionId: new UniqueEntityId('question-1').toString(),
       })
     )
     await inMemoryAnswerRepository.create(
       MakeAnswer({
-        questionId: new UniqueEntityId('question-1'),
+        questionId: new UniqueEntityId('question-1').toString(),
       })
     )
 
@@ -47,7 +47,7 @@ describe('Fetch Questions Answers', () => {
     for (let i = 1; i <= 22; i++) {
       await inMemoryAnswerRepository.create(
         MakeAnswer({
-          questionId: new UniqueEntityId('question-1'),
+          questionId: new UniqueEntityId('question-1').toString(),
         })
       )
     }

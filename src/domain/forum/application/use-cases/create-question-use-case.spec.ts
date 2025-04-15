@@ -16,40 +16,35 @@ describe('Create a Question', () => {
     )
     sut = new CreateQuestionUseCase(
       inMemoryQuestionsRepository,
-      inMemoryQuestionAttachmentRepository
     )
   })
 
   it('should be able to create a question', async () => {
     const result = await sut.execute({
       authorId: '1',
-      title: 'Nova Pergunta',
-      content: 'Eu quero fazer uma pergunta!',
+      title: 'Nova pergunta',
+      content: 'Conteúdo da pergunta',
       attachmentsIds: ['1', '2'],
     })
 
     expect(result.isRight()).toBe(true)
     expect(inMemoryQuestionsRepository.items[0]).toEqual(result.value?.question)
     expect(
-      inMemoryQuestionsRepository.items[0].attachments.currentItems
+      inMemoryQuestionsRepository.items[0].attachments.currentItems,
     ).toHaveLength(2)
     expect(
-      inMemoryQuestionsRepository.items[0].attachments.currentItems
+      inMemoryQuestionsRepository.items[0].attachments.currentItems,
     ).toEqual([
-      expect.objectContaining({
-        attachmentId: new UniqueEntityId('1').toString(),
-      }),
-      expect.objectContaining({
-        attachmentId: new UniqueEntityId('2').toString(),
-      }),
+      expect.objectContaining({ attachmentId: new UniqueEntityId('1') }),
+      expect.objectContaining({ attachmentId: new UniqueEntityId('2') }),
     ])
   })
 
-  it('should persist atttachments when creating a new question', async () => {
+  it('should persist attachments when creating a new question', async () => {
     const result = await sut.execute({
       authorId: '1',
-      title: 'Nova Pergunta',
-      content: 'Eu quero fazer uma pergunta!',
+      title: 'Nova pergunta',
+      content: 'Conteúdo da pergunta',
       attachmentsIds: ['1', '2'],
     })
 
@@ -58,16 +53,12 @@ describe('Create a Question', () => {
     expect(inMemoryQuestionAttachmentRepository.items).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          props: expect.objectContaining({
-            attachmentId: '1',
-          }),
+          attachmentId: new UniqueEntityId('1'),
         }),
         expect.objectContaining({
-          props: expect.objectContaining({
-            attachmentId: '2',
-          }),
+          attachmentId: new UniqueEntityId('1'),
         }),
-      ])
+      ]),
     )
   })
 })

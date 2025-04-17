@@ -12,8 +12,7 @@ let sut: EditAnswerUseCase
 
 describe('Edit Answer', () => {
   beforeEach(() => {
-    inMemoryAnswerAttachmentRepository =
-      new InMemoryAnswerAttachmentRepository()
+    inMemoryAnswerAttachmentRepository = new InMemoryAnswerAttachmentRepository()
     inMemoryAnswersRepository = new InMemoryAnswerRepository(
       inMemoryAnswerAttachmentRepository
     )
@@ -23,7 +22,7 @@ describe('Edit Answer', () => {
     )
   })
 
-  it('should be able to edit a answer', async () => {
+  it('should be able to edit an answer', async () => {
     const newAnswer = MakeAnswer(
       {
         authorId: new UniqueEntityId('author-1').toString(),
@@ -55,19 +54,21 @@ describe('Edit Answer', () => {
       expect.arrayContaining([
         expect.objectContaining({
           props: expect.objectContaining({
+            answerId: 'answer-1',
             attachmentId: '1',
           }),
         }),
         expect.objectContaining({
           props: expect.objectContaining({
+            answerId: 'answer-1',
             attachmentId: '3',
           }),
         }),
       ])
-    )    
+    )
   })
 
-  it('should not be able to edit a answer', async () => {
+  it('should not be able to edit an answer if user is not author', async () => {
     const newAnswer = MakeAnswer(
       {
         authorId: new UniqueEntityId('author-1').toString(),
@@ -86,5 +87,53 @@ describe('Edit Answer', () => {
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(NotAllowedError)
+  })
+
+  it('should sync new and remove attachments when editing an answer', async () => {
+    const newAnswer = MakeAnswer(
+      {
+        authorId: new UniqueEntityId('author-1').toString(),
+      },
+      new UniqueEntityId('answer-1')
+    )
+
+    await inMemoryAnswersRepository.create(newAnswer)
+
+    inMemoryAnswerAttachmentRepository.items.push(
+      MakeAnswerAttachment({
+        answerId: newAnswer.id.toString(),
+        attachmentId: new UniqueEntityId('1').toString(),
+      }),
+      MakeAnswerAttachment({
+        answerId: newAnswer.id.toString(),
+        attachmentId: new UniqueEntityId('2').toString(),
+      })
+    )
+
+    const result = await sut.execute({
+      answerId: newAnswer.id.toString(),
+      authorId: 'author-1',
+      content: 'Conteúdo da pergunta',
+      attachmentsIds: ['1', '3'],
+    })
+
+    expect(result.isRight()).toBe(true)
+    expect(inMemoryAnswerAttachmentRepository.items).toHaveLength(2)
+    expect(inMemoryAnswerAttachmentRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          props: expect.objectContaining({
+            answerId: 'answer-1',
+            attachmentId: '1',
+          }),
+        }),
+        expect.objectContaining({
+          props: expect.objectContaining({
+            answerId: 'answer-1',
+            attachmentId: '3',
+          }),
+        }),
+      ])
+    )
   })
 })

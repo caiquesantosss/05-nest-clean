@@ -16,12 +16,10 @@ export class PrismaQuestionsRepository implements QuestionRepository {
   async create(question: Question): Promise<void> {
     const data = PrismaQuestionMapper.toPrisma(question)
 
-    // Criação da questão no banco de dados
     await this.prisma.question.create({
       data,
     })
 
-    // Associa os anexos da questão
     await this.questionAttachmentRepository.createMany(
       question.attachments.getItems()
     )
@@ -30,7 +28,6 @@ export class PrismaQuestionsRepository implements QuestionRepository {
   async save(question: Question): Promise<void> {
     const data = PrismaQuestionMapper.toPrisma(question)
 
-    // Atualiza a questão no banco de dados
     await Promise.all([
       this.prisma.question.update({
         where: {
@@ -39,12 +36,10 @@ export class PrismaQuestionsRepository implements QuestionRepository {
         data,
       }),
 
-      // Adiciona novos anexos
       this.questionAttachmentRepository.createMany(
         question.attachments.getNewItems()
       ),
 
-      // Remove anexos deletados
       this.questionAttachmentRepository.deleteMany(
         question.attachments.getRemovedItems()
       ),
@@ -54,7 +49,6 @@ export class PrismaQuestionsRepository implements QuestionRepository {
   async delete(question: Question): Promise<void> {
     const data = PrismaQuestionMapper.toPrisma(question)
 
-    // Deleta a questão do banco de dados
     await this.prisma.question.delete({
       where: {
         id: data.id,

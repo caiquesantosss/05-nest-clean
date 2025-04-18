@@ -11,6 +11,7 @@ import { z } from 'zod'
 
 import { FetchQuestionCommentUseCase } from '@/domain/forum/application/use-cases/fetch-question-comment-use-case'
 import { CommentsPresenter } from '../presenters/comments-presenters'
+import { CommentWithAuthorPresenter } from '../presenters/comment-with-author-presenter'
 
 const PageQueryParamsSchema = z
   .string()
@@ -42,8 +43,8 @@ export class FetchQuestionsCommentsController {
       throw new BadRequestException()
     }
 
-    const questionComments = result.value.questionsComments
+    const comments = result.value.comments
 
-    return { questionComments: questionComments.map(CommentsPresenter.toHttp) }
+    return { questionComments: comments.map(CommentWithAuthorPresenter.toHttp) }
   }
 }

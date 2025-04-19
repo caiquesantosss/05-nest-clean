@@ -21,7 +21,12 @@ describe('Fetch Question Answers [E2E]', () => {
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory, AnswerFactory, AnswerCommentFactory],
+      providers: [
+        StudentFactory,
+        QuestionFactory,
+        AnswerFactory,
+        AnswerCommentFactory,
+      ],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -34,7 +39,9 @@ describe('Fetch Question Answers [E2E]', () => {
   })
 
   test('[GET] /answer/:answerId/comments', async () => {
-    const user = await studentFactory.MakePrismaStudent()
+    const user = await studentFactory.MakePrismaStudent({
+      name: 'Tezinho',
+    })
 
     const acessToken = jwt.sign({ sub: user.id.toValue() })
 
@@ -43,12 +50,12 @@ describe('Fetch Question Answers [E2E]', () => {
     })
 
     const answer = await answerFactory.MakePrismaAnswer({
-        authorId: user.id.toString(), 
-        questionId: question.id.toString()
+      authorId: user.id.toString(),
+      questionId: question.id.toString(),
     })
 
     await Promise.all([
-        answerCommentFactory.MakePrismaAnswerComment({
+      answerCommentFactory.MakePrismaAnswerComment({
         authorId: user.id,
         answerId: answer.id,
         content: 'Comment 01',
@@ -63,16 +70,22 @@ describe('Fetch Question Answers [E2E]', () => {
     const answerId = answer.id.toString()
 
     const response = await request(app.getHttpServer())
-      .get(`/answer/${answerId}/comments`)  
+      .get(`/answer/${answerId}/comments`)
       .set('Authorization', `Bearer ${acessToken}`)
       .send()
 
     expect(response.statusCode).toBe(200)
-    expect(response.body.answerComments).toEqual(
-      expect.arrayContaining([
-          expect.objectContaining({ content: 'Comment 02' }),
-          expect.objectContaining({ content: 'Comment 01' }),
-      ])
-    )
+    expect(response.body).toEqual({
+      comments: expect.arrayContaining([
+        expect.objectContaining({
+          content: 'Comment 02',
+          authorName: 'Tezinho',
+        }),
+        expect.objectContaining({
+          content: 'Comment 01',
+          authorName: 'Tezinho',
+        }),
+      ]),
+    })
   })
 })

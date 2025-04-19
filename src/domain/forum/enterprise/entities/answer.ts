@@ -14,7 +14,7 @@ export interface AnswerProps {
 }
 
 export class Answer extends AggregateRoot<AnswerProps> {
-  get AuthorId() {
+  get authorId() {
     return this.props.authorId
   }
 
@@ -22,11 +22,11 @@ export class Answer extends AggregateRoot<AnswerProps> {
     return this.props.questionId
   }
 
-  get Content() {
+  get content() {
     return this.props.content
   }
 
-  get CreatedAt() {
+  get createdAt() {
     return this.props.createdAt
   }
 
@@ -34,12 +34,12 @@ export class Answer extends AggregateRoot<AnswerProps> {
     return this.props.attachments
   }
 
-  get UpdateAt() {
+  get updatedAt() {
     return this.props.updatedAt
   }
 
   get excerpt() {
-    return this.Content.substring(0, 120).trim().concat('...')
+    return this.content.substring(0, 120).trim().concat('...')
   }
 
   private touch() {

@@ -18,11 +18,11 @@ export interface QuestionProps {
 }
 
 export class Question extends AggregateRoot<QuestionProps> {
-  get AuthorId() {
+  get authorId() {
     return this.props.authorId
   }
 
-  get BestAnswerId() {
+  get bestAnswerId() {
     return this.props.bestAnswerId
   }
 
@@ -30,11 +30,11 @@ export class Question extends AggregateRoot<QuestionProps> {
     return this.props.attachments
   }
 
-  get Title() {
+  get title() {
     return this.props.title
   }
 
-  get Content() {
+  get content() {
     return this.props.content
   }
 
@@ -42,20 +42,20 @@ export class Question extends AggregateRoot<QuestionProps> {
     return this.props.slug
   }
 
-  get CreatedAt() {
+  get createdAt() {
     return this.props.createdAt
   }
 
-  get UpdateAt() {
+  get updatedAt() {
     return this.props.updatedAt
   }
 
   get isNew(): boolean {
-    return dayjs().diff(this.CreatedAt, 'days') <= 3
+    return dayjs().diff(this.createdAt, 'days') <= 3
   }
 
   get excerpt() {
-    return this.Content.substring(0, 120).trim().concat('...')
+    return this.content.substring(0, 120).trim().concat('...')
   }
 
   private touch() {

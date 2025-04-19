@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common'
 
 interface ChooseQuestionBestAnswerRequest {
   AnswerId: string
-  AuthorId: string
+  authorId: string
 }
 
 type ChooseQuestionBestAnswerResponse = Either<
@@ -27,7 +27,7 @@ export class ChooseQuestionBestAnswerUseCase {
 
   async execute({
     AnswerId,
-    AuthorId,
+    authorId,
   }: ChooseQuestionBestAnswerRequest): Promise<ChooseQuestionBestAnswerResponse> {
     const answer = await this.answerRepository.findById(AnswerId)
 
@@ -43,7 +43,7 @@ export class ChooseQuestionBestAnswerUseCase {
       return left(new ResourceNotFoundError())
     }
 
-    if (AuthorId !== question.AuthorId.toString()) {
+    if (authorId !== question.authorId.toString()) {
       return left(new NotAllowedError())
     }
 

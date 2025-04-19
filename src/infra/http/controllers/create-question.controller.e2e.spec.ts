@@ -45,7 +45,7 @@ describe('Create Question [E2E]', () => {
       .set('Authorization', `Bearer ${acessToken}`)
       .send({
         title: 'New question',
-        content: 'Content question',
+        content: 'content question',
         attachments: [attachment1.id.toString(), attachment2.id.toString()],
       })
 
@@ -60,10 +60,9 @@ describe('Create Question [E2E]', () => {
 
     const attachmentOnDatabase = await prisma.attachment.findMany({
       where: {
-        questionId: QuestionOnDatabase?.id
-      }
+        questionId: QuestionOnDatabase?.id,
+      },
     })
-
 
     expect(attachmentOnDatabase).toHaveLength(2)
   })

@@ -26,10 +26,10 @@ export class OnCreatedAnswer implements EventHandler {
 
     if (question) {
       await this.sendNotification.execute({
-        recipientId: question.AuthorId.toString(),
-        title: `Nova pergunta em ${question.Title.substring(0, 40).concat(
-          '...'
-        )}`,
+        recipientId: question.authorId.toString(),
+        title: `Nova pergunta em ${question.title
+          .substring(0, 40)
+          .concat('...')}`,
         content: answer.excerpt,
       })
     }

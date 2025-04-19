@@ -3,15 +3,20 @@ import { InMemoryAnswerCommentRepository } from 'test/repositories/in-memory-ans
 import { CommentOnAnswerUseCase } from './comment-on-answer-use-case'
 import { MakeAnswer } from 'test/factories/make-answer'
 import { InMemoryAnswerAttachmentRepository } from 'test/repositories/in-memory-answer-attachment-repository'
+import { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repository'
 
 let inMemoryAnswerCommentRepository: InMemoryAnswerCommentRepository
 let inMemoryAnswerAttachmentRepository: InMemoryAnswerAttachmentRepository
 let inMemoryAnswersRepository: InMemoryAnswerRepository
+let inMemoryStudenRepository: InMemoryStudentRepository
 let sut: CommentOnAnswerUseCase
 
 describe('Comment On Answer Use Case', () => {
   beforeEach(() => {
-    inMemoryAnswerCommentRepository = new InMemoryAnswerCommentRepository()
+    inMemoryStudenRepository = new InMemoryStudentRepository()
+    inMemoryAnswerCommentRepository = new InMemoryAnswerCommentRepository(
+      inMemoryStudenRepository
+    )
     inMemoryAnswerAttachmentRepository =
       new InMemoryAnswerAttachmentRepository()
     inMemoryAnswersRepository = new InMemoryAnswerRepository(
@@ -31,7 +36,7 @@ describe('Comment On Answer Use Case', () => {
 
     const result = await sut.execute({
       answerId: answer.id.toString(),
-      authorId: answer.AuthorId.toString(),
+      authorId: answer.authorId.toString(),
       content: 'Comentario teste',
     })
 

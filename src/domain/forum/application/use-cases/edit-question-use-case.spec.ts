@@ -5,17 +5,25 @@ import { EditQuestionUseCase } from './edit-question-use-case'
 import { NotAllowedError } from '../../../../core/errors/errors/not-allowed-error'
 import { InMemoryQuestionAttachmentRepository } from '../../../../../test/repositories/in-memory-question-attachments-repository'
 import { makeQuestionAttachment } from 'test/factories/make-question-attachments'
+import { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
 let inMemoryQuestionAttachmentRepository: InMemoryQuestionAttachmentRepository
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
+let inMemoryStudenRepository: InMemoryStudentRepository
 let sut: EditQuestionUseCase
 
 describe('Edit Question', () => {
   beforeEach(() => {
     inMemoryQuestionAttachmentRepository =
       new InMemoryQuestionAttachmentRepository()
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
+    inMemoryStudenRepository = new InMemoryStudentRepository()
     inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
-      inMemoryQuestionAttachmentRepository
+      inMemoryQuestionAttachmentRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryStudenRepository
     )
     sut = new EditQuestionUseCase(
       inMemoryQuestionsRepository,
@@ -54,12 +62,12 @@ describe('Edit Question', () => {
 
     const updatedQuestion = inMemoryQuestionsRepository.items[0]
 
-    expect(updatedQuestion.Title).toBe('Pergunta teste')
-    expect(updatedQuestion.Content).toBe('Conteúdo da pergunta')
+    expect(updatedQuestion.title).toBe('Pergunta teste')
+    expect(updatedQuestion.content).toBe('Conteúdo da pergunta')
 
     expect(updatedQuestion).toMatchObject({
-      Title: 'Pergunta teste',
-      Content: 'Conteúdo da pergunta',
+      title: 'Pergunta teste',
+      content: 'Conteúdo da pergunta',
     })
 
     expect(

@@ -19,11 +19,11 @@ export class PrismaAnswerMapper {
   static toPrisma(answer: Answer): Prisma.AnswerUncheckedCreateInput {
     return {
       id: answer.id.toString(),
-      authorId: answer.AuthorId.toString(),
+      authorId: answer.authorId.toString(),
       questionId: answer.QuestionId.toString(),
-      content: answer.Content,
-      createdAt: answer.CreatedAt,
-      updateAt: answer.UpdateAt,
+      content: answer.content,
+      createdAt: answer.createdAt,
+      updateAt: answer.updatedAt,
     }
   }
 }

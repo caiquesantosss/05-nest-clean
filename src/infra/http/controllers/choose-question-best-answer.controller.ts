@@ -1,8 +1,9 @@
 import {
-    BadRequestException, Controller,
-    HttpCode,
-    Param,
-    Patch
+  BadRequestException,
+  Controller,
+  HttpCode,
+  Param,
+  Patch,
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
@@ -23,7 +24,7 @@ export class ChooseQuestionBestAnswerController {
     const userId = user.sub
 
     const result = await this.chooseQuestionBestAnswer.execute({
-      AuthorId: userId,
+      authorId: userId,
       AnswerId,
     })
 

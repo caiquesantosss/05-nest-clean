@@ -28,7 +28,7 @@ type EditQuestionUseCaseResponse = Either<
 export class EditQuestionUseCase {
   constructor(
     private questionsRepository: QuestionRepository,
-    private questionAttachmentsRepository: QuestionAttachmentRepository,
+    private questionAttachmentsRepository: QuestionAttachmentRepository
   ) {}
 
   async execute({
@@ -44,7 +44,7 @@ export class EditQuestionUseCase {
       return left(new ResourceNotFoundError())
     }
 
-    if (authorId !== question.AuthorId.toString()) {
+    if (authorId !== question.authorId.toString()) {
       return left(new NotAllowedError())
     }
 
@@ -52,7 +52,7 @@ export class EditQuestionUseCase {
       await this.questionAttachmentsRepository.findManyQuestionId(questionId)
 
     const questionAttachmentList = new QuestionAttachmentList(
-      currentQuestionAttachments,
+      currentQuestionAttachments
     )
 
     const questionAttachments = attachmentsIds.map((attachmentId) => {

@@ -4,6 +4,8 @@ import { AnswerComment } from '@/domain/forum/enterprise/entities/answer-comment
 import { Injectable } from '@nestjs/common'
 import { PrismaAnswerCommentMapper } from '../mappers/prisma-answer-comment-mapper'
 import { PrismaService } from '../prisma.service'
+import { CommentWithAuthor } from '@/domain/forum/enterprise/entities/values-object/comment-with-author'
+import { PrismaCommentWithAuthorMapper } from '../mappers/prisma-comment-with-author-mapper'
 
 @Injectable()
 export class PrismaAnswerCommentsRepository implements AnswerCommentRepository {
@@ -30,12 +32,33 @@ export class PrismaAnswerCommentsRepository implements AnswerCommentRepository {
   
       return PrismaAnswerCommentMapper.toDomain(answerComment)
     }
+
+     async findManyAnswerIdWithAuthor(
+        answerId: string,
+        { page }: PaginationParams
+      ): Promise<CommentWithAuthor[]> {
+        const answers = await this.prisma.comment.findMany({
+          where: {
+            answerId,
+          },
+          include: {
+            author: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 20,
+          skip: (page - 1) * 20,
+        })
+    
+        return answers.map(PrismaCommentWithAuthorMapper.toDomain)
+      }
   
     async findManyAnswerId(
       answerId: string,
       { page }: PaginationParams
     ): Promise<AnswerComment[]> {
-      const questions = await this.prisma.comment.findMany({
+      const answers = await this.prisma.comment.findMany({
         where: {
           answerId,
         },
@@ -46,7 +69,7 @@ export class PrismaAnswerCommentsRepository implements AnswerCommentRepository {
         skip: (page - 1) * 20,
       })
   
-      return questions.map(PrismaAnswerCommentMapper.toDomain)
+      return answers.map(PrismaAnswerCommentMapper.toDomain)
     }
   
     async delete(answerComment: AnswerComment): Promise<void> {

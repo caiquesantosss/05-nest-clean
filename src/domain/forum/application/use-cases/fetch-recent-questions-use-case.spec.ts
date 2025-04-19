@@ -2,17 +2,25 @@ import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questio
 import { MakeQuestion } from 'test/factories/make-question'
 import { FetchRecentQuestionUseCaseUseCase } from './fetch-recent-questions-use-case'
 import { InMemoryQuestionAttachmentRepository } from 'test/repositories/in-memory-question-attachments-repository'
+import { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
-let inMemoryQuestionAttachmentRepository: InMemoryQuestionAttachmentRepository
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
+let inMemoryQuestionAttachmentRepository: InMemoryQuestionAttachmentRepository
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
+let inMemoryStudenRepository: InMemoryStudentRepository
 let sut: FetchRecentQuestionUseCaseUseCase
 
 describe('Fetch Recent Questions', () => {
   beforeEach(() => {
     inMemoryQuestionAttachmentRepository =
       new InMemoryQuestionAttachmentRepository()
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
+    inMemoryStudenRepository = new InMemoryStudentRepository()
     inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
-      inMemoryQuestionAttachmentRepository
+      inMemoryQuestionAttachmentRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryStudenRepository
     )
     sut = new FetchRecentQuestionUseCaseUseCase(inMemoryQuestionsRepository)
   })
@@ -33,9 +41,9 @@ describe('Fetch Recent Questions', () => {
     })
 
     expect(result.value?.questions).toEqual([
-      expect.objectContaining({ CreatedAt: new Date(2022, 0, 23) }),
-      expect.objectContaining({ CreatedAt: new Date(2022, 0, 20) }),
-      expect.objectContaining({ CreatedAt: new Date(2022, 0, 18) }),
+      expect.objectContaining({ createdAt: new Date(2022, 0, 23) }),
+      expect.objectContaining({ createdAt: new Date(2022, 0, 20) }),
+      expect.objectContaining({ createdAt: new Date(2022, 0, 18) }),
     ])
   })
 

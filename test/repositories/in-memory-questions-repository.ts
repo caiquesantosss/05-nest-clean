@@ -2,21 +2,26 @@ import { Slug } from '@/domain/forum/enterprise/entities/values-object/slug'
 import { QuestionRepository } from '../../src/domain/forum/application/repositories/question-repository'
 import { Question } from '../../src/domain/forum/enterprise/entities/question'
 import { PaginationParams } from '@/core/repositories/pagenations-params'
-import { QuestionAttachmentRepository } from '../../src/domain/forum/application/repositories/question-attachments-repository'
 import { DomainEvents } from '../../src/core/events/domain-events'
+import { InMemoryAttachmentsRepository } from './in-memory-attachments-repository'
+import { InMemoryStudentRepository } from './in-memory-student-repository'
+import { InMemoryQuestionAttachmentRepository } from './in-memory-question-attachments-repository'
+import { QuestionDetails } from '@/domain/forum/enterprise/entities/values-object/question-details'
 
 export class InMemoryQuestionsRepository implements QuestionRepository {
   public items: Question[] = []
 
   constructor(
-    private questionAttachmentRepository: QuestionAttachmentRepository
+    private questionAttachmentRepository: InMemoryQuestionAttachmentRepository,
+    private attachmentRepository: InMemoryAttachmentsRepository,
+    private studentRepository: InMemoryStudentRepository
   ) {}
 
   async create(question: Question) {
     this.items.push(question)
 
     await this.questionAttachmentRepository.createMany(
-      question.attachments.getItems(),
+      question.attachments.getItems()
     )
 
     DomainEvents.dispatchEventsForAggregate(question.id)
@@ -30,6 +35,55 @@ export class InMemoryQuestionsRepository implements QuestionRepository {
     }
 
     return question
+  }
+
+  async findDetailsBySlug(slug: string) {
+    const question = this.items.find((item) => item.slug.value === slug)
+
+    if (!question) {
+      return null
+    }
+
+    const author = this.studentRepository.items.find((student) => {
+      return student.id.equals(question.authorId)
+    })
+
+    if (!author) {
+      throw new Error(`Author with ID ${question.authorId} not found.`)
+    }
+
+    const questionAttachments = this.questionAttachmentRepository.items.filter(
+      (questionAttachments) => {
+        return questionAttachments.questionId.equals(question.id)
+      }
+    )
+
+    const attachments = questionAttachments.map((questionAttachments) => {
+      const attachment = this.attachmentRepository.items.find((attachment) => {
+        return attachment.id.equals(questionAttachments.attachmentId)
+      })
+
+      if (!attachment) {
+        throw new Error(
+          `Attachment with ID ${questionAttachments.attachmentId} not found.`
+        )
+      }
+
+      return attachment
+    })
+
+    return QuestionDetails.create({
+      questionId: question.id,
+      authorId: question.authorId,
+      author: author.name,
+      title: question.title,
+      slug: question.slug,
+      content: question.content,
+      attachments,
+      bestAnswerId: question.bestAnswerId,
+      createdAt: question.createdAt,
+      updatedAt: question.updatedAt,
+    })
   }
 
   async findById(id: string) {
@@ -48,11 +102,11 @@ export class InMemoryQuestionsRepository implements QuestionRepository {
     this.items[itemIndex] = question
 
     await this.questionAttachmentRepository.createMany(
-      question.attachments.getNewItems(),
+      question.attachments.getNewItems()
     )
 
     await this.questionAttachmentRepository.deleteMany(
-      question.attachments.getRemovedItems(),
+      question.attachments.getRemovedItems()
     )
 
     DomainEvents.dispatchEventsForAggregate(question.id)
@@ -70,7 +124,7 @@ export class InMemoryQuestionsRepository implements QuestionRepository {
 
   async findManyRecent({ page }: PaginationParams) {
     const questions = this.items
-      .sort((a, b) => b.CreatedAt.getTime() - a.CreatedAt.getTime())
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20)
 
     return questions

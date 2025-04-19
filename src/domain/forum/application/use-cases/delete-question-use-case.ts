@@ -28,7 +28,7 @@ export class DeleteQuestionUseCase {
       return left(new ResourceNotFoundError())
     }
 
-    if (authorId !== question.AuthorId.toString()) {
+    if (authorId !== question.authorId.toString()) {
       return left(new NotAllowedError())
     }
 

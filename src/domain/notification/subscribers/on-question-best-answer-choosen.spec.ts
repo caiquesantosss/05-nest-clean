@@ -12,12 +12,16 @@ import {
 } from '../application/use-cases/send-notification-use-case'
 import { MockInstance, vi } from 'vitest'
 import { MakeQuestion } from 'test/factories/make-question'
+import { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentRepository
 let inMemoryQuestionRepository: InMemoryQuestionsRepository
 let inMemoryAnswerAttachmentRepository: InMemoryAnswerAttachmentRepository
 let inMemoryAnswerRepository: InMemoryAnswerRepository
 let inMemoryNotificaitonRepository: InMemoryNotificationRepository
+let inMemoryStudentRepository: InMemoryStudentRepository
+let inMemoryAttachmentRepository: InMemoryAttachmentsRepository
 let sendNotificationUseCase: SendNotificationUseCase
 
 let sendNotificationExecuteSpy: MockInstance<
@@ -30,8 +34,12 @@ describe('On Question Best Answer Chosen', () => {
   beforeEach(() => {
     inMemoryQuestionAttachmentsRepository =
       new InMemoryQuestionAttachmentRepository()
+    inMemoryAttachmentRepository = new InMemoryAttachmentsRepository()
+    inMemoryStudentRepository = new InMemoryStudentRepository()
     inMemoryQuestionRepository = new InMemoryQuestionsRepository(
-      inMemoryQuestionAttachmentsRepository
+      inMemoryQuestionAttachmentsRepository,
+      inMemoryAttachmentRepository,
+      inMemoryStudentRepository
     )
     inMemoryAnswerAttachmentRepository =
       new InMemoryAnswerAttachmentRepository()
@@ -50,7 +58,7 @@ describe('On Question Best Answer Chosen', () => {
 
   it('should send a notification when question has new best answer chosen', async () => {
     const question = MakeQuestion()
-    const answer = MakeAnswer({ questionId: question.id })
+    const answer = MakeAnswer({ questionId: question.id.toString() })
 
     inMemoryQuestionRepository.create(question)
     inMemoryAnswerRepository.create(answer)

@@ -12,11 +12,15 @@ import {
 } from '../application/use-cases/send-notification-use-case'
 import { MockInstance, vi } from 'vitest'
 import { MakeQuestion } from 'test/factories/make-question'
+import { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentRepository
 let inMemoryQuestionRepository: InMemoryQuestionsRepository
 let inMemoryAnswerAttachmentRepository: InMemoryAnswerAttachmentRepository
 let inMemoryAnswerRepository: InMemoryAnswerRepository
+let inMemoryStudentRepository: InMemoryStudentRepository
+let inMemoryAttachmentRepository: InMemoryAttachmentsRepository
 let inMemoryNotificaitonRepository: InMemoryNotificationRepository
 let sendNotificationUseCase: SendNotificationUseCase
 
@@ -30,8 +34,12 @@ describe('On Created Answer', () => {
   beforeEach(() => {
     inMemoryQuestionAttachmentsRepository =
       new InMemoryQuestionAttachmentRepository()
+    inMemoryAttachmentRepository = new InMemoryAttachmentsRepository()
+    inMemoryStudentRepository = new InMemoryStudentRepository()
     inMemoryQuestionRepository = new InMemoryQuestionsRepository(
-      inMemoryQuestionAttachmentsRepository
+      inMemoryQuestionAttachmentsRepository,
+      inMemoryAttachmentRepository,
+      inMemoryStudentRepository
     )
     inMemoryAnswerAttachmentRepository =
       new InMemoryAnswerAttachmentRepository()
@@ -50,7 +58,7 @@ describe('On Created Answer', () => {
 
   it('should send a notification when an answer is created', async () => {
     const quesiton = MakeQuestion()
-    const answer = MakeAnswer({ questionId: quesiton.id })
+    const answer = MakeAnswer({ questionId: quesiton.id.toString() })
 
     inMemoryQuestionRepository.create(quesiton)
     inMemoryAnswerRepository.create(answer)

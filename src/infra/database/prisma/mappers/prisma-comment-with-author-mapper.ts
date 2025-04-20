@@ -10,8 +10,8 @@ export class PrismaCommentWithAuthorMapper {
   static toDomain(raw: PrismaCommentWithAuthor): CommentWithAuthor {
     return CommentWithAuthor.create({
         commentId: new UniqueEntityId(raw.id),
-        content: raw.content,
         authorId: new UniqueEntityId(raw.authorId),
+        content: raw.content,
         author: raw.author.name,
         createdAt: raw.createdAt, 
         updatedAt: raw.updateAt

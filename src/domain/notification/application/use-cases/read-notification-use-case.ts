@@ -1,4 +1,3 @@
-import { UniqueEntityId } from '@/core/entities/unique-entity'
 import { Notification } from '../../enterprise/entities/notification'
 import { Either, left, right } from '@/core/either'
 import { NotificationRepository } from '../repositories/notification-repository'

@@ -3,6 +3,7 @@ import { AnswerRepository } from '../../src/domain/forum/application/repositorie
 import { Answer } from '../../src/domain/forum/enterprise/entities/answer'
 import { AnswerAttachmentRepository } from '@/domain/forum/application/repositories/answer-attachments-repository'
 import { DomainEvents } from '../../src/core/events/domain-events'
+import { Injectable } from '@nestjs/common'
 
 export class InMemoryAnswerRepository implements AnswerRepository {
   public items: Answer[] = []

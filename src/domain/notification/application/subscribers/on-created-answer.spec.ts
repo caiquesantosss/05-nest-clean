@@ -9,7 +9,7 @@ import {
   SendNotificationUseCase,
   SendNotificationUseCaseRequest,
   SendNotificationUseCaseRespose,
-} from '../application/use-cases/send-notification-use-case'
+} from '../../application/use-cases/send-notification-use-case'
 import { MockInstance, vi } from 'vitest'
 import { MakeQuestion } from 'test/factories/make-question'
 import { InMemoryStudentRepository } from 'test/repositories/in-memory-student-repository'
@@ -19,9 +19,9 @@ let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentRepository
 let inMemoryQuestionRepository: InMemoryQuestionsRepository
 let inMemoryAnswerAttachmentRepository: InMemoryAnswerAttachmentRepository
 let inMemoryAnswerRepository: InMemoryAnswerRepository
-let inMemoryNotificaitonRepository: InMemoryNotificationRepository
 let inMemoryStudentRepository: InMemoryStudentRepository
 let inMemoryAttachmentRepository: InMemoryAttachmentsRepository
+let inMemoryNotificaitonRepository: InMemoryNotificationRepository
 let sendNotificationUseCase: SendNotificationUseCase
 
 let sendNotificationExecuteSpy: MockInstance<
@@ -30,7 +30,7 @@ let sendNotificationExecuteSpy: MockInstance<
   ) => Promise<SendNotificationUseCaseRespose>
 >
 
-describe('On Question Best Answer Chosen', () => {
+describe('On Created Answer', () => {
   beforeEach(() => {
     inMemoryQuestionAttachmentsRepository =
       new InMemoryQuestionAttachmentRepository()
@@ -56,16 +56,12 @@ describe('On Question Best Answer Chosen', () => {
     new OnCreatedAnswer(inMemoryQuestionRepository, sendNotificationUseCase)
   })
 
-  it('should send a notification when question has new best answer chosen', async () => {
-    const question = MakeQuestion()
-    const answer = MakeAnswer({ questionId: question.id.toString() })
+  it('should send a notification when an answer is created', async () => {
+    const quesiton = MakeQuestion()
+    const answer = MakeAnswer({ questionId: quesiton.id.toString() })
 
-    inMemoryQuestionRepository.create(question)
+    inMemoryQuestionRepository.create(quesiton)
     inMemoryAnswerRepository.create(answer)
-
-    question.bestAnswerId = answer.id
-
-    inMemoryQuestionRepository.save(question)
 
     await vi.waitFor(
       async () => {

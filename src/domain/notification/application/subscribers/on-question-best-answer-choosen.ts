@@ -1,12 +1,15 @@
-import { DomainEvents } from '../../../core/events/domain-events'
-import { EventHandler } from '../../../core/events/event-handler'
-import { SendNotificationUseCase } from '../../notification/application/use-cases/send-notification-use-case'
+import { DomainEvents } from '../../../../core/events/domain-events'
+import { EventHandler } from '../../../../core/events/event-handler'
+import { SendNotificationUseCase } from '../../../notification/application/use-cases/send-notification-use-case'
 import { InMemoryAnswerRepository } from 'test/repositories/in-memory-answer-repository'
 import { QuestionBestAnswerChosenEvent } from '@/domain/forum/application/event/question-best-answer-choosen-event'
+import { Injectable } from '@nestjs/common'
+import { AnswerRepository } from '@/domain/forum/application/repositories/answer-repository'
 
+@Injectable()
 export class OnQuestionBestAnswerChosen implements EventHandler {
   constructor(
-    private answersRepository: InMemoryAnswerRepository,
+    private answersRepository: AnswerRepository,
     private sendNotification: SendNotificationUseCase
   ) {
     this.setupSubscriptions()

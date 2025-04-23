@@ -15,8 +15,8 @@ model User {
   role          UserRole       @default(STUDENT)
   answers       Answer[]
   comments      Comment[]
-  questions     Question[]
   notifications Notification[]
+  questions     Question[]
 
   @@map("users")
 }
@@ -89,8 +89,7 @@ model Notification {
   content     String
   readAt      DateTime? @map("read_at")
   createdAt   DateTime  @default(now()) @map("created_at")
-
-  recipient User @relation(fields: [recipientId], references: [id])
+  recipient   User      @relation(fields: [recipientId], references: [id])
 
   @@map("notifications")
 }

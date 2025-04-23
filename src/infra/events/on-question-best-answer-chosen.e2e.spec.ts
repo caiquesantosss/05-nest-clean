@@ -10,24 +10,27 @@ import { AnswerFactory } from 'test/factories/make-answer'
 import { QuestionFactory } from 'test/factories/make-question'
 import { StudentFactory } from 'test/factories/make-student'
 
-describe('Notification [E2E]', () => {
+describe('Notification Best Answer Question [E2E]', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
   let studentFactory: StudentFactory
+  let answerFactory: AnswerFactory
   let questionFactory: QuestionFactory
-
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory],
+      providers: [StudentFactory, QuestionFactory, AnswerFactory]
     }).compile()
+
+    
 
     app = moduleRef.createNestApplication()
     jwt = moduleRef.get(JwtService)
     prisma = moduleRef.get(PrismaService)
     studentFactory = moduleRef.get(StudentFactory)
+    answerFactory = moduleRef.get(AnswerFactory)
     questionFactory = moduleRef.get(QuestionFactory)
 
     DomainEvents.shouldRun = true
@@ -35,33 +38,35 @@ describe('Notification [E2E]', () => {
     await app.init()
   })
 
-  it('should send a notificatio when answer is created', async () => {
+  it('should send a notification when answer is created', async () => {
     const user = await studentFactory.MakePrismaStudent()
 
     const acessToken = jwt.sign({ sub: user.id.toString() })
 
     const question = await questionFactory.MakePrismaQuestion({
-      authorId: user.id,
+        authorId: user.id
     })
 
-    const questionId = question.id.toString()
+    const answer = await answerFactory.MakePrismaAnswer({
+        questionId: question.id.toString(),
+        authorId: user.id.toString()
+    })
 
-    await request(app.getHttpServer())
-      .post(`/questions/${questionId}/answers`)
+    const answerId = answer.id.toString()
+
+    const response = await request(app.getHttpServer())
+      .patch(`/answers/${answerId}/choose-as-best`)
       .set('Authorization', `Bearer ${acessToken}`)
-      .send({
-        content: 'New Answer',
-        attachments: [],
-      })
+      .send()
 
-    await vi.waitFor(async () => {
-      const notificationOnDatabase = await prisma.notification.findFirst({
-        where: {
-          recipientId: user.id.toString(),
-        },
-      })
-
-      expect(notificationOnDatabase).not.toBeNull()
-    })    
+      await vi.waitFor(async () => {
+        const notificationOnDatabase = await prisma.notification.findFirst({
+          where: {
+            recipientId: user.id.toString(),
+          },
+        })
+  
+        expect(notificationOnDatabase).not.toBeNull()
+    })
   })
 })
